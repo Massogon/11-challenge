@@ -1,29 +1,21 @@
-const router = require('express').Router();
-const store = require('../db/store');
+const { v4:uuidv4 } = require('uuid');
+const { readFromFile, readAndAppend, readAndDelete } = require('../helpers/fsUtils');
+const router = require("express").Router()
 
-// GET "/api/notes" responds with all notes from the database
-router.get('/notes', (req, res) => {
-  store
-    .getNotes()
-    .then((notes) => {
-      return res.json(notes);
-    })
-    .catch((err) => res.status(500).json(err));
-});
-
-router.post('/notes', (req, res) => {
-  store
-    .addNote(req.body)
-    .then((note) => res.json(note))
-    .catch((err) => res.status(500).json(err));
-});
-
-// DELETE "/api/notes" deletes the note with an id equal to req.params.id
-router.delete('/notes/:id', (req, res) => {
-  store
-    .removeNote(req.params.id)
-    .then(() => res.json({ ok: true }))
-    .catch((err) => res.status(500).json(err));
-});
-
-module.exports = router;
+router.get("/notes", (req,res) => {
+    readFromFile("./db/db.json").then(data => res.json(JSON.parse(data)))
+})
+router.post("/notes", (req,res) => {
+    const{ title, text} = req.body
+    if(title && text) {
+        const newNote = {
+            title, text, id:uuidv4()
+        }
+        readAndAppend(newNote, "./db/db.json")
+        res.json("note added")
+    }
+    else{
+        res.json("error adding note")
+    }
+} )
+module.exports = router

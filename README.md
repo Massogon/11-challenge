@@ -66,7 +66,7 @@ To run this application locally:
 
 ## Deployed Application
 
-You can access the deployed application here: [Live Application](https://your-app-url-on-render)
+You can access the deployed application here: [Live Application](https://one1-challenge-7yp6.onrender.com)
 
 ## License
 
